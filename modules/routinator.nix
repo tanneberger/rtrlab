@@ -63,7 +63,7 @@ in {
     wantedBy = [ "multi-user.target" ]; 
 
     script = ''
-      ${pkgs.routinator}/bin/routinator server --config ${config-file} --extra-tals-dir="/var/lib/routinator/tals"
+      ${pkgs.routinator}/bin/routinator --config ${config-file} --extra-tals-dir="/var/lib/routinator/tals server"
     '';
   };
    services = {
