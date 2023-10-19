@@ -42,6 +42,7 @@
   users.users.root = {
     openssh.authorizedKeys.keyFiles = [
       ../../keys/ssh/tassilo
+      ../../keys/ssh/moritz
     ];
   };
   services.openssh = {
