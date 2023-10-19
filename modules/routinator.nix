@@ -1,4 +1,4 @@
-{pkgs, config, lib, ... }: 
+{ pkgs, config, lib, ... }:
 let
   http-host = "127.0.0.1";
   http-port = 8323;
@@ -45,8 +45,9 @@ let
     http-listen = ["${http-host}:${toString http-port}"]
   '';
 
-in {
-  
+in
+{
+
   nixpkgs.overlays = [
     (final: prev: {
       routinator = prev.routinator.overrideAttrs (old: {
@@ -58,7 +59,7 @@ in {
 
   systemd.services."routinator" = {
     enable = true;
-    wantedBy = [ "multi-user.target" ]; 
+    wantedBy = [ "multi-user.target" ];
 
     script = ''
       ${pkgs.routinator}/bin/routinator --config ${config-file} --extra-tals-dir="/var/lib/routinator/tals" server
@@ -67,10 +68,10 @@ in {
     serviceConfig = {
       Type = "forking";
       User = "routinator";
-      Restart = "unless-stopped";
+      Restart = "always";
     };
   };
-   services = {
+  services = {
     nginx = {
       enable = true;
       recommendedProxySettings = true;
@@ -92,5 +93,10 @@ in {
     name = "routinator";
     isSystemUser = true;
     uid = 1501;
+    group = "routinator";
   };
- }
+  users.groups."routinator" = {
+    name = "routinator";
+    gid = 1502;
+  };
+}
