@@ -33,17 +33,15 @@ let
     retry = 600
     expire = 7200
     history-size = 10
-    rtr-listen = []
-    rtr-tls-listen = []
-    http-listen = []
-    http-tls-listen = []
     systemd-listen = false
     rtr-tcp-keepalive = 60
     rtr-client-metrics = false
     log-level = "WARN"
     log = "default"
     syslog-facility = "daemon"
+    rtr-tls-listen = []
     rtr-listen = ["${rtr-host}:${toString rtr-port}"]
+    http-tls-listen = []
     http-listen = ["${http-host}:${toString http-port}"]
   '';
 
@@ -63,7 +61,7 @@ in {
     wantedBy = [ "multi-user.target" ]; 
 
     script = ''
-      ${pkgs.routinator}/bin/routinator --config ${config-file} --extra-tals-dir="/var/lib/routinator/tals server"
+      ${pkgs.routinator}/bin/routinator --config ${config-file} --extra-tals-dir="/var/lib/routinator/tals" server
     '';
   };
    services = {
