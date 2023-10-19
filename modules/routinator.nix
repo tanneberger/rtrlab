@@ -5,7 +5,7 @@ let
   rtr-host = "0.0.0.0";
   rtr-port = 3323;
 
-  config-file = pkgs.writeText "routinator.conf" ''
+  routinator-config-file = pkgs.writeText "routinator.conf" ''
     repository-dir = "/var/lib/routinator/rpki-cache/repository"
     exceptions = []
     strict = false
@@ -57,20 +57,39 @@ in
   ];
 
 
-  systemd.services."routinator" = {
-    enable = true;
-    wantedBy = [ "multi-user.target" ];
+  systemd.services = {
+    "routinator" = {
+      enable = true;
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
 
-    script = ''
-      ${pkgs.routinator}/bin/routinator --config ${config-file} --extra-tals-dir="/var/lib/routinator/tals" server
-    '';
+      script = ''
+        ${pkgs.routinator}/bin/routinator --config ${routinator-config-file} --extra-tals-dir="/var/lib/routinator/tals" server
+      '';
 
-    serviceConfig = {
-      Type = "forking";
-      User = "routinator";
-      Restart = "always";
+      serviceConfig = {
+        Type = "forking";
+        User = "routinator";
+        Restart = "always";
+      };
+    };
+    "krill" = {
+      enable = true;
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
+
+      script = ''
+        ${pkgs.krill}/bin/krill --config /var/lib/krill/krill.conf
+      '';
+
+      serviceConfig = {
+        Type = "forking";
+        User = "krill";
+        Restart = "always";
+      };
     };
   };
+
   services = {
     nginx = {
       enable = true;
@@ -98,5 +117,16 @@ in
   users.groups."routinator" = {
     name = "routinator";
     gid = 1502;
+  };
+
+  users.users."krill" = {
+    name = "routinator";
+    isSystemUser = true;
+    uid = 1503;
+    group = "krill";
+  };
+  users.groups."krill" = {
+    name = "krill";
+    gid = 1504;
   };
 }
