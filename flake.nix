@@ -24,6 +24,7 @@
             ./modules/rtrlab
             ./hosts/rtrlab
             ./modules/routinator.nix
+            ./modules/nginx.nix
             {
               nixpkgs.overlays = [
               ];

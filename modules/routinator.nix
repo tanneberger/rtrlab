@@ -1,5 +1,9 @@
 {pkgs, config, lib, ... }: 
 let
+  http-host = "127.0.0.1";
+  http-port = 8323;
+  rtr-host = "0.0.0.0";
+  rtr-port = 3323;
 
   config-file = pkgs.writeText "routinator.conf" ''
     repository-dir = "/var/lib/routinator/rpki-cache/repository"
@@ -39,6 +43,8 @@ let
     log-level = "WARN"
     log = "default"
     syslog-facility = "daemon"
+    rtr-listen = ["${rtr-host}:${toString rtr-port}"]
+    http-listen = ["${http-host}:${toString http-port}"]
   '';
 
 in {
@@ -57,7 +63,24 @@ in {
     wantedBy = [ "multi-user.target" ]; 
 
     script = ''
-      ${pkgs.routinator}/bin/routinator --config ${config-file} --extra-tals-dir="/var/lib/routinator/tals"
+      ${pkgs.routinator}/bin/routinator server --config ${config-file} --extra-tals-dir="/var/lib/routinator/tals"
     '';
+  };
+   services = {
+    nginx = {
+      enable = true;
+      recommendedProxySettings = true;
+      virtualHosts = {
+        "${config.rtrlab.domain}" = {
+          forceSSL = true;
+          enableACME = true;
+          locations = {
+            "/" = {
+              proxyPass = "http://${http-host}:${toString http-port}/";
+            };
+          };
+        };
+      };
+    };
   };
  }
