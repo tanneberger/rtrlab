@@ -23,6 +23,7 @@
             sops-nix.nixosModules.sops
             ./modules/rtrlab
             ./hosts/rtrlab
+            ./modules/routinator.nix
             {
               nixpkgs.overlays = [
               ];
