@@ -63,6 +63,12 @@ in {
     script = ''
       ${pkgs.routinator}/bin/routinator --config ${config-file} --extra-tals-dir="/var/lib/routinator/tals" server
     '';
+
+    serviceConfig = {
+      Type = "forking";
+      User = "routinator";
+      Restart = "unless-stopped";
+    };
   };
    services = {
     nginx = {
@@ -80,5 +86,11 @@ in {
         };
       };
     };
+  };
+
+  users.users."routinator" = {
+    name = "routinator";
+    isSystemUser = true;
+    uid = 1501;
   };
  }
