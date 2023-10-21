@@ -43,6 +43,7 @@
     openssh.authorizedKeys.keyFiles = [
       ../../keys/ssh/tassilo
       ../../keys/ssh/moritz
+      ../../keys/ssh/carl
     ];
   };
   services.openssh = {
