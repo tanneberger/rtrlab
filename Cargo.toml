@@ -1,5 +1,5 @@
 [package]
-name = "rtr_fake_server"
+name = "rtrlab-fishy-server"
 version = "0.1.0"
 edition = "2021"
 
