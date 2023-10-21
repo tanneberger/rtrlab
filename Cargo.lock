@@ -118,16 +118,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e496a50fda8aacccc86d7529e2c1e0892dbd0f898a6b5645b5561b89c3210efa"
 
 [[package]]
-name = "fishy-rtr-server"
-version = "0.1.0"
-dependencies = [
- "futures",
- "rpki",
- "tokio",
- "tokio-stream",
-]
-
-[[package]]
 name = "futures"
 version = "0.3.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -394,6 +384,16 @@ dependencies = [
  "tokio-stream",
  "untrusted",
  "uuid",
+]
+
+[[package]]
+name = "rtrlab-fishy-server"
+version = "0.1.0"
+dependencies = [
+ "futures",
+ "rpki",
+ "tokio",
+ "tokio-stream",
 ]
 
 [[package]]
