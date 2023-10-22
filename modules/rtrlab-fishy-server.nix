@@ -38,5 +38,5 @@ in
     name = "rtrlab-fishy-server";
     gid = 1502;
   };
-
+  networking.firewall.allowedTCPPorts = [ rtr-port 22 ];
 }
