@@ -35,7 +35,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
     // constructing aspa pdu
     let aspa_pdu = Aspa::new(
         version,
-        0,
+        1,
         customer_as,
         ProviderAsns::try_from_iter(list_provider_as.into_iter())
             .expect("cannot generate aspa pdu"),
