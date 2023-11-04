@@ -8,6 +8,29 @@ use rpki::rtr::pdu::{Aspa, CacheResponse, EndOfData, ProviderAsns, ResetQuery};
 use rpki::rtr::state::{Serial, State};
 use rpki::rtr::Timing;
 
+use rand;
+use rand::Rng;
+
+async fn generate_random_aspa_object(flag: u8) -> Aspa {
+    let cas = rand::thread_rng().gen_range(1..200);
+
+    let num_pas = rand::thread_rng().gen_range(1..10);
+    let mut pas = vec![];
+
+    for i in 0..num_pas {
+        pas.push(Asn::from_u32(rand::thread_rng().gen_range(1..200)))
+    }
+
+    // constructing aspa pdu
+    Aspa::new(
+        1,
+        flag,
+        Asn::from_u32(cas),
+        ProviderAsns::try_from_iter(pas.into_iter())
+            .expect("cannot generate aspa pdu"),
+    )
+}
+
 async fn process_socket(stream: &mut rtr::RtrStream) {
     // version id for header
     let version = 1;
@@ -32,20 +55,17 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
         .await
         .expect("cannot write cache response");
 
-    // constructing aspa pdu
-    let aspa_pdu = Aspa::new(
-        version,
-        1,
-        customer_as,
-        ProviderAsns::try_from_iter(list_provider_as.into_iter())
-            .expect("cannot generate aspa pdu"),
-    );
 
-    // send aspa pdu
-    aspa_pdu
-        .write(stream)
-        .await
-        .expect("cannot transmit aspa rtr pdu");
+    for i in 0..10000 {
+        let new_pdu: Aspa = generate_random_aspa_object(rand::thread_rng().gen_range(0..1)).await;
+
+        // send aspa pdu
+       new_pdu
+            .write(stream)
+            .await
+            .expect("cannot transmit aspa rtr pdu");
+    }
+
 
     // increment session serial by one
     session_state.inc();
