@@ -3,7 +3,7 @@ let
   http-host = "127.0.0.1";
   http-port = 8323;
   rtr-host = "0.0.0.0";
-  rtr-port = 3323;
+  rtr-port = 3324;
 
   config-file = pkgs.writeText "routinator.conf" ''
     repository-dir = "/var/lib/routinator/rpki-cache/repository"
@@ -33,10 +33,6 @@ let
     retry = 600
     expire = 7200
     history-size = 10
-    rtr-listen = []
-    rtr-tls-listen = []
-    http-listen = []
-    http-tls-listen = []
     systemd-listen = false
     rtr-tcp-keepalive = 60
     rtr-client-metrics = false
@@ -63,7 +59,7 @@ in {
     wantedBy = [ "multi-user.target" ]; 
 
     script = ''
-      ${pkgs.routinator}/bin/routinator server --config ${config-file} --extra-tals-dir="/var/lib/routinator/tals"
+      ${pkgs.routinator}/bin/routinator --config ${config-file} --extra-tals-dir="/var/lib/routinator/tals" server     
     '';
   };
    services = {
