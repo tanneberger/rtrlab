@@ -46,7 +46,6 @@
           sops-nix.nixosModules.sops
           ./modules/rtrlab
           ./hosts/rtrlab
-          ./modules/rtrlab-fishy-server.nix
           ./modules/nginx.nix
           {
             nixpkgs.overlays = [
