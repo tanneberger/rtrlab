@@ -14,7 +14,7 @@ use rand::Rng;
 async fn generate_random_aspa_object(flag: u8) -> Aspa {
     let cas = rand::thread_rng().gen_range(1..200);
 
-    let num_pas = rand::thread_rng().gen_range(1..10);
+    let num_pas = rand::thread_rng().gen_range(1..100);
     let mut pas = vec![];
 
     for i in 0..num_pas {
