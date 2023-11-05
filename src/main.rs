@@ -57,7 +57,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
 
 
     for i in 0..10000 {
-        let new_pdu: Aspa = generate_random_aspa_object(rand::thread_rng().gen_range(0..1)).await;
+        let new_pdu: Aspa = generate_random_aspa_object(rand::thread_rng().gen_range(0..2)).await;
 
         // send aspa pdu
        new_pdu
