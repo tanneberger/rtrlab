@@ -67,7 +67,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
             .await
             .expect("cannot transmit aspa rtr pdu");
         
-        if rand::thread_rng().gen_range(0..2) == 0 {
+        if rand::thread_rng().gen_range(0..10) < 3 {
             // constructing aspa pdu
             let wd_pdu: Aspa = Aspa::new(
                 1,
@@ -98,7 +98,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
 
 
     // #################### Incremental updates
-
+    /*
     session_state.inc();
     sleep(Duration::from_secs(1));
 
@@ -123,7 +123,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
             .await
             .expect("cannot transmit aspa rtr pdu");
         
-        if rand::thread_rng().gen_range(0..2) == 0 {
+        if rand::thread_rng().gen_range(0..10) < 3 {
             // constructing aspa pdu
             let wd_pdu: Aspa = Aspa::new(
                 1,
@@ -149,6 +149,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
         .write(stream)
         .await
         .expect("couldn't send end of data pdu");
+     */
 
 }
 
