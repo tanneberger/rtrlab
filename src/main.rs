@@ -2,6 +2,8 @@ mod rtr;
 
 use rpki::resources::Asn;
 use std::error::Error;
+use std::thread::sleep;
+use std::time::Duration;
 use tokio::net::TcpListener;
 
 use rpki::rtr::pdu::{Aspa, CacheResponse, EndOfData, ProviderAsns, ResetQuery};
@@ -57,7 +59,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
 
 
     for i in 0..10000 {
-        let new_pdu: Aspa = generate_random_aspa_object(rand::thread_rng().gen_range(0..1)).await;
+        let new_pdu: Aspa = generate_random_aspa_object(rand::thread_rng().gen_range(0..2)).await;
 
         // send aspa pdu
        new_pdu
@@ -78,6 +80,10 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
         .write(stream)
         .await
         .expect("couldn't send end of data pdu");
+
+
+    // send incremental updates
+    //sleep(Duration::from_secs(1));
 }
 
 #[tokio::main]
