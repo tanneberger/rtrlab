@@ -59,15 +59,30 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
 
 
     for i in 0..10000 {
-        let new_pdu: Aspa = generate_random_aspa_object(rand::thread_rng().gen_range(0..2)).await;
-
+        let new_pdu: Aspa = generate_random_aspa_object(1).await;
+        
         // send aspa pdu
-       new_pdu
+        new_pdu
             .write(stream)
             .await
             .expect("cannot transmit aspa rtr pdu");
+        
+        if rand::thread_rng().gen_range(0..2) == 0 {
+            // constructing aspa pdu
+            let wd_pdu: Aspa = Aspa::new(
+                1,
+                0, // withdraw
+                Asn::from_u32(new_pdu.cas),
+                ProviderAsns::empty()
+            )
+            
+            wd_pdu
+                .write(stream)
+                .await
+                .expect("cannot transmit withdrawal aspa rtr pdu");
+        }
     }
-
+    
 
     // increment session serial by one
     session_state.inc();
@@ -100,13 +115,28 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
     cache_response.write(stream).await.expect("cannot send cace response");
 
     for i in 0..1000 {
-        let new_pdu: Aspa = generate_random_aspa_object(rand::thread_rng().gen_range(0..2)).await;
+        let new_pdu: Aspa = generate_random_aspa_object(1).await;
 
         // send aspa pdu
         new_pdu
             .write(stream)
             .await
             .expect("cannot transmit aspa rtr pdu");
+        
+        if rand::thread_rng().gen_range(0..2) == 0 {
+            // constructing aspa pdu
+            let wd_pdu: Aspa = Aspa::new(
+                1,
+                0, // withdraw
+                Asn::from_u32(new_pdu.cas),
+                ProviderAsns::empty()
+            )
+            
+            wd_pdu
+                .write(stream)
+                .await
+                .expect("cannot transmit withdrawal aspa rtr pdu");
+        }
     }
 
     session_state.inc();
