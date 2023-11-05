@@ -72,9 +72,9 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
             let wd_pdu: Aspa = Aspa::new(
                 1,
                 0, // withdraw
-                Asn::from_u32(new_pdu.cas),
+                new_pdu.customer(),
                 ProviderAsns::empty()
-            )
+            );
             
             wd_pdu
                 .write(stream)
@@ -128,9 +128,9 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
             let wd_pdu: Aspa = Aspa::new(
                 1,
                 0, // withdraw
-                Asn::from_u32(new_pdu.cas),
+                new_pdu.customer(),
                 ProviderAsns::empty()
-            )
+            );
             
             wd_pdu
                 .write(stream)
