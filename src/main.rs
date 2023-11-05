@@ -2,9 +2,11 @@ mod rtr;
 
 use rpki::resources::Asn;
 use std::error::Error;
+use std::thread::sleep;
+use std::time::Duration;
 use tokio::net::TcpListener;
 
-use rpki::rtr::pdu::{Aspa, CacheResponse, EndOfData, ProviderAsns, ResetQuery};
+use rpki::rtr::pdu::{Aspa, CacheResponse, EndOfData, ProviderAsns, ResetQuery, SerialNotify, SerialQuery};
 use rpki::rtr::state::{Serial, State};
 use rpki::rtr::Timing;
 
@@ -80,8 +82,43 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
         .expect("couldn't send end of data pdu");
 
 
-    // ####################
+    // #################### Incremental updates
 
+    session_state.inc();
+    sleep(Duration::from_secs(1));
+
+    let notify = SerialNotify::new(version, session_state);
+
+    notify.write(stream).await.expect("coundln't send serial notify");
+
+    // reset query request by the rtr client
+    let _reset_query = SerialQuery::read(stream)
+        .await
+        .expect("cannot read serial query");
+
+    let cache_response = CacheResponse::new(version, session_state);
+    cache_response.write(stream).await.expect("cannot send cace response");
+
+    for i in 0..1000 {
+        let new_pdu: Aspa = generate_random_aspa_object(rand::thread_rng().gen_range(0..2)).await;
+
+        // send aspa pdu
+        new_pdu
+            .write(stream)
+            .await
+            .expect("cannot transmit aspa rtr pdu");
+    }
+
+    session_state.inc();
+
+    // endofdata pdu
+    let end_of_data = EndOfData::new(version, session_state, Timing::default());
+
+    // send endofdata
+    end_of_data
+        .write(stream)
+        .await
+        .expect("couldn't send end of data pdu");
 
 }
 
