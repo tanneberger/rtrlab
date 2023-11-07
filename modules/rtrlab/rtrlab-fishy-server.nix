@@ -17,6 +17,7 @@ in
 
       environment = {
         "ADDR" = "${rtr-host}:${toString rtr-port}";
+        "TOPOLOGY_PATH" = ../../topology.json;
       };
 
       serviceConfig = {
