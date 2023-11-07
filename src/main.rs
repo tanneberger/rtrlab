@@ -1,5 +1,6 @@
 mod rtr;
 
+use std::collections::HashMap;
 use rpki::resources::Asn;
 use std::error::Error;
 use tokio::net::TcpListener;
@@ -36,7 +37,7 @@ async fn generate_random_aspa_object(flag: u8) -> Aspa {
 #[derive(Deserialize)]
 pub struct Topology {
     as_numbers: Vec<u32>,
-    aspas: Vec<(u32, Vec<u32>)>,
+    aspas: HashMap<u32, Vec<u32>>,
 }
 
 async fn send_open(stream: &mut rtr::RtrStream, session_state: &mut State) {
@@ -72,6 +73,7 @@ async fn announce_config(stream: &mut rtr::RtrStream, x: &mut State) {
     send_open(stream, &mut session_state).await;
 
     for aspa in topology.aspas {
+        println!("announcing: cas: {} pas: {:?}", &aspa.0, &aspa.1);
         let aspa_object = Aspa::new(
             1,
             1, //add //add //add //add
