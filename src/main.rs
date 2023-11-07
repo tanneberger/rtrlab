@@ -35,7 +35,7 @@ async fn generate_random_aspa_object(flag: u8) -> Aspa {
 
 #[derive(Deserialize)]
 pub struct Topology {
-    as_nummers: Vec<u32>,
+    as_numbers: Vec<u32>,
     aspas: Vec<(u32, Vec<u32>)>,
 }
 
