@@ -4,7 +4,7 @@
     enable = true;
     wantedBy = [ "multi-user.target" ]; 
     script = ''
-      ${pkgs.krill}/bin/krill --config ${./krill.config}
+      ${pkgs.krill}/bin/krill --config ${./krill.conf}
     '';
   };
 }
