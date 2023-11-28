@@ -1,14 +1,10 @@
 {pkgs, config, lib, ...}: {
   
-  systemd.services.krill = {
+  systemd.services."krill" = {
     enable = true;
+    wantedBy = [ "multi-user.target" ]; 
     script = ''
       ${pkgs.krill}/bin/krill
     '';
-
-    environment = {
-
-
-    };
   };
 }
