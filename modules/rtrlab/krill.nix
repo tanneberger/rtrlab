@@ -6,7 +6,5 @@
     script = ''
       ${pkgs.krill}/bin/krill --config ${./krill.conf}
     '';
-    enivronment = {
-    };
   };
 }
