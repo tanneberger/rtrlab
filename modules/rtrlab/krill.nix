@@ -1,5 +1,6 @@
 {pkgs, config, lib, ...}: {
-  
+  virtualisation.docker.enable = true;
+
   systemd.services."krill" = {
     enable = true;
     wantedBy = [ "multi-user.target" ]; 
