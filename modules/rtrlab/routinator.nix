@@ -71,7 +71,7 @@ in {
           forceSSL = true;
           enableACME = true;
           locations = {
-            "/" = {
+            "/routinator" = {
               proxyPass = "http://${http-host}:${toString http-port}/";
             };
           };
