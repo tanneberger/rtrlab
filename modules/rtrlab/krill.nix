@@ -10,12 +10,10 @@
   #};
 
   services.nginx = {
-
-
     virtualHosts."krill.rtrlab.tanneberger.me" = {
       enableACME = true;
       locations."/" = {
-        proxyPass = "http://127.0.0.1:3000";
+        proxyPass = "https://localhost:3000";
       };
     };
   };
