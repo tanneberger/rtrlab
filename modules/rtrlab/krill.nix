@@ -11,7 +11,7 @@ let
     ip = "${http-host}"
     port = ${toString http-port}
     https_mode = "disable"
-    service_uri = "https://rtrlab.tanneberger.me/krill"
+    service_uri = "https://rtrlab.tanneberger.me/krill/"
     ca_refresh_seconds = 5400
     ca_refresh_jitter_seconds = 300
   '';
