@@ -11,7 +11,7 @@ let
     ip = "${http-host}"
     port = ${toString http-port}
     https_mode = "disable"
-    service_uri = "https://rtrlab.tanneberger.me/krill/"
+    service_uri = "https://rtrlab.tanneberger.me/"
     ca_refresh_seconds = 5400
     ca_refresh_jitter_seconds = 300
   '';
@@ -35,7 +35,7 @@ in {
           forceSSL = true;
           enableACME = true;
           locations = {
-            "/krill" = {
+            "/" = {
               proxyPass = "http://${http-host}:${toString http-port}/";
             };
           };
