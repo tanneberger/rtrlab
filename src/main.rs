@@ -65,7 +65,7 @@ async fn announce_config(stream: &mut rtr::RtrStream, x: &mut State) {
     .expect("cannot parse topology");
 
     // version id for header
-    let version = 1;
+    let version = 2;
     let start_serial = 42;
     // construct current state with serial
     let mut session_state = State::new_with_serial(Serial::from_be(start_serial));
