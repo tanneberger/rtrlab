@@ -53,7 +53,8 @@ in {
     })
   ];
 
-
+  environment.systemPackages = with pkgs; [ routinator ]; 
+  
   systemd.services."routinator" = {
     enable = true;
     wantedBy = [ "multi-user.target" ]; 
