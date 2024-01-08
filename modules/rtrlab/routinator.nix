@@ -80,4 +80,6 @@ in {
       };
     };
   };
+
+  networking.firewall.allowedTCPPorts = [ rtr-port 22 ];
 }
