@@ -11,7 +11,7 @@ let
     dirty = false
     disable-rrdp = false
     disable-rsync = false
-    enable-aspa = false
+    enable-aspa = true
     enable-bgpsec = false
     exceptions = []
     expire = 7200
@@ -52,7 +52,7 @@ in
   nixpkgs.overlays = [
     (final: prev: {
       routinator = prev.routinator.overrideAttrs (old: {
-        buildFeatures = [ "socks" "aspa" ];
+        buildFeatures = [ "socks" "aspa" "ui" ];
       });
     })
   ];
