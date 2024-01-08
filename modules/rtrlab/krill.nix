@@ -1,4 +1,4 @@
-{pkgs, config, lib, ... }: 
+{ pkgs, config, lib, ... }:
 let
   http-host = "127.0.0.1";
   http-port = 3000;
@@ -18,31 +18,32 @@ let
     ca_refresh_jitter_seconds = 300
   '';
 
-#[testbed]
-#rrdp_base_uri = "https://rtrlab.tanneberger.me/rrdp/"
-#rsync_jail = "rsync://rtrlab.tanneberger.me/repo/"
-#ta_aia = "rsync://rtrlab.tanneberger.me/ta/ta.cer"
-#ta_uri = "https://rtrlab.tanneberger.me/ta/ta.cer"
+  #[testbed]
+  #rrdp_base_uri = "https://rtrlab.tanneberger.me/rrdp/"
+  #rsync_jail = "rsync://rtrlab.tanneberger.me/repo/"
+  #ta_aia = "rsync://rtrlab.tanneberger.me/ta/ta.cer"
+  #ta_uri = "https://rtrlab.tanneberger.me/ta/ta.cer"
 
-in {
+in
+{
   # https://krill.docs.nlnetlabs.nl/en/stable/testbed.html
 
-  environment.systemPackages = with pkgs; [ krill ]; 
-  environment.variables  = {
-	KRILL_CLI_TOKEN = "${token}";
-	KRILL_CLI_SERVER = "https://rtrlab.tanneberger.me/";
-	KRILL_CLI_MY_CA = "rtrlab";
+  environment.systemPackages = with pkgs; [ krill ];
+  environment.variables = {
+    KRILL_CLI_TOKEN = "${token}";
+    KRILL_CLI_SERVER = "https://rtrlab.tanneberger.me/";
+    KRILL_CLI_MY_CA = "rtrlab";
   };
 
   systemd.services."krill" = {
     enable = true;
-    wantedBy = [ "multi-user.target" ]; 
+    wantedBy = [ "multi-user.target" ];
 
     script = ''
       ${pkgs.krill}/bin/krill --config ${config-file}
     '';
   };
-   services = {
+  services = {
     nginx = {
       enable = true;
       recommendedProxySettings = true;

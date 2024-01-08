@@ -1,4 +1,4 @@
-{ buildPackage, lib}:
+{ buildPackage, lib }:
 
 buildPackage {
   pname = "rtrlab-fishy-server";
