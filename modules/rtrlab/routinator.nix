@@ -51,8 +51,9 @@ in
 
   nixpkgs.overlays = [
     (final: prev: {
-      routinator = prev.routinator.overrideAttrs (old: {
+      aspa_routinator = prev.routinator.overrideAttrs (old: {
         buildFeatures = [ "socks" "aspa" "ui" ];
+	buildNoDefaultFeatures = false;
       });
     })
   ];
@@ -64,7 +65,7 @@ in
     wantedBy = [ "multi-user.target" ];
 
     script = ''
-      ${pkgs.routinator}/bin/routinator --config ${config-file} --no-rir-tals --tal=nlnetlabs-testbed server     
+      ${pkgs.aspa_routinator}/bin/routinator --config ${config-file} --no-rir-tals --tal=nlnetlabs-testbed server     
     '';
   };
   services = {
