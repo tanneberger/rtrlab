@@ -106,7 +106,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
 
     send_open(stream, &mut session_state).await;
 
-    /*for i in 0..10000 {
+    for i in 0..10000 {
         let new_pdu: Aspa = generate_random_aspa_object(1).await;
 
         // send aspa pdu
@@ -129,11 +129,11 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
                 .await
                 .expect("cannot transmit withdrawal aspa rtr pdu");
         } else {
-            announced_cas.push(new_pdu.customer());
+            //announced_cas.push(new_pdu.customer());
         }
-    }*/
+    }
 
-    announce_config(stream, &mut session_state).await;
+    //announce_config(stream, &mut session_state).await;
 
     // increment session serial by one
     session_state.inc();
