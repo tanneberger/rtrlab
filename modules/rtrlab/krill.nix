@@ -16,15 +16,13 @@ let
     service_uri = "https://rtrlab.tanneberger.me/"
     ca_refresh_seconds = 5400
     ca_refresh_jitter_seconds = 300
-    
-    [testbed]
-    rrdp_base_uri = "https://rtrlab.tanneberger.me/rrdp/"
-    rsync_jail = "rsync://rtrlab.tanneberger.me/repo/"
-    ta_aia = "rsync://rtrlab.tanneberger.me/ta/ta.cer"
-    ta_uri = "https://rtrlab.tanneberger.me/ta/ta.cer"
-
-
   '';
+
+#[testbed]
+#rrdp_base_uri = "https://rtrlab.tanneberger.me/rrdp/"
+#rsync_jail = "rsync://rtrlab.tanneberger.me/repo/"
+#ta_aia = "rsync://rtrlab.tanneberger.me/ta/ta.cer"
+#ta_uri = "https://rtrlab.tanneberger.me/ta/ta.cer"
 
 in {
   # https://krill.docs.nlnetlabs.nl/en/stable/testbed.html
