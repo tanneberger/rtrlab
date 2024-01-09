@@ -8,7 +8,7 @@ let
 
   rtr-port-stable = 3325; 
 
-  config-file = pkgs.writeText "routinator.conf" ''
+  config-file = (name: pkgs.writeText "routinator.conf" ''
 
     allow-dubious-hosts = false
     dirty = false
@@ -43,9 +43,9 @@ let
     unknown-objects = "warn"
     unsafe-vrps = "accept"
     validation-threads = 10
-    repository-dir = "/var/lib/routinator/rpki-cache/repository"
+    repository-dir = "/var/lib/${name}/rpki-cache/repository"
     rsync-command = "${pkgs.rsync}/bin/rsync"
-  '';
+  '');
 
 in
 {
@@ -66,7 +66,7 @@ in
     wantedBy = [ "multi-user.target" ];
 
     script = ''
-      ${pkgs.aspa_routinator}/bin/routinator --config ${config-file} --no-rir-tals --extra-tals-dir="/var/lib/routinator/tals" server --http ${http-host}:${toString http-port} --rtr ${rtr-host}:${toString rtr-port}
+      ${pkgs.aspa_routinator}/bin/routinator --config ${(config-file "routinator")} --no-rir-tals --extra-tals-dir="/var/lib/routinator/tals" server --http ${http-host}:${toString http-port} --rtr ${rtr-host}:${toString rtr-port}
     '';
   };
 
@@ -76,7 +76,7 @@ in
     wantedBy = [ "multi-user.target" ];
 
     script = ''
-      ${pkgs.aspa_routinator}/bin/routinator --config ${config-file} server --rtr ${rtr-host}:${toString rtr-port-stable}
+      ${pkgs.aspa_routinator}/bin/routinator --config ${(config-file "routinator-stable")} server --rtr ${rtr-host}:${toString rtr-port-stable}
     '';
   };
   services = {
