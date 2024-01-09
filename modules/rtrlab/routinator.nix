@@ -2,8 +2,11 @@
 let
   http-host = "127.0.0.1";
   http-port = 8323;
+
   rtr-host = "0.0.0.0";
   rtr-port = 3324;
+
+  rtr-port-stable = 3325; 
 
   config-file = pkgs.writeText "routinator.conf" ''
 
@@ -42,8 +45,6 @@ let
     validation-threads = 10
     repository-dir = "/var/lib/routinator/rpki-cache/repository"
     rsync-command = "${pkgs.rsync}/bin/rsync"
-    rtr-listen = ["${rtr-host}:${toString rtr-port}"]
-    http-listen = ["${http-host}:${toString http-port}"]
   '';
 
 in
@@ -65,7 +66,17 @@ in
     wantedBy = [ "multi-user.target" ];
 
     script = ''
-      ${pkgs.aspa_routinator}/bin/routinator --config ${config-file} --no-rir-tals --extra-tals-dir="/var/lib/routinator/tals" server     
+      ${pkgs.aspa_routinator}/bin/routinator --config ${config-file} --no-rir-tals --extra-tals-dir="/var/lib/routinator/tals" server --http ${http-host}:${toString http-port} --rtr ${rtr-host}:${toString rtr-port}
+    '';
+  };
+
+
+  systemd.services."routinator-stable" = {
+    enable = true;
+    wantedBy = [ "multi-user.target" ];
+
+    script = ''
+      ${pkgs.aspa_routinator}/bin/routinator --config ${config-file} server --rtr ${rtr-host}:${toString rtr-port-stable}
     '';
   };
   services = {
