@@ -97,5 +97,5 @@ in
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ rtr-port 22 ];
+  networking.firewall.allowedTCPPorts = [ rtr-port rtr-port-stable 22 ];
 }
