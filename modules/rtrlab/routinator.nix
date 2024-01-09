@@ -65,7 +65,7 @@ in
     wantedBy = [ "multi-user.target" ];
 
     script = ''
-      ${pkgs.aspa_routinator}/bin/routinator --config ${config-file} --no-rir-tals --tal=nlnetlabs-testbed server     
+      ${pkgs.aspa_routinator}/bin/routinator --config ${config-file} --no-rir-tals --extra-tals-dir="/var/lib/routinator/tals" server     
     '';
   };
   services = {
