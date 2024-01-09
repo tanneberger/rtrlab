@@ -52,7 +52,7 @@ in
   nixpkgs.overlays = [
     (final: prev: {
       aspa_routinator = prev.routinator.overrideAttrs (old: {
-        buildFeatures = [ "socks" "aspa" "ui" ];
+        buildFeatures = [ "socks" "aspa" ];
 	buildNoDefaultFeatures = false;
       });
     })
