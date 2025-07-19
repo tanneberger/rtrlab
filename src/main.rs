@@ -12,7 +12,9 @@ use rpki::rtr::Timing;
 use rand::Rng;
 use serde::Deserialize;
 
-async fn generate_random_aspa_object(version: u8, flag: u8) -> Aspa {
+const RTR_VERSION: u8 = 2;
+
+async fn generate_random_aspa_object(flag: u8) -> Aspa {
     let cas = rand::rng().random_range(1..200);
 
     let num_pas = rand::rng().random_range(1..100);
@@ -24,7 +26,7 @@ async fn generate_random_aspa_object(version: u8, flag: u8) -> Aspa {
 
     // constructing aspa pdu
     Aspa::new(
-        version,
+        RTR_VERSION,
         flag,
         Asn::from_u32(cas),
         ProviderAsns::try_from_iter(pas.into_iter()).expect("cannot generate aspa pdu"),
@@ -44,7 +46,7 @@ async fn send_open(stream: &mut rtr::RtrStream, session_state: &mut State) {
         .expect("cannot parse reset query");
 
     // rtr server should respond with cache response pud
-    let cache_response = CacheResponse::new(1, *session_state);
+    let cache_response = CacheResponse::new(RTR_VERSION, *session_state);
 
     // sending cache response
     cache_response
@@ -61,8 +63,6 @@ async fn announce_config(stream: &mut rtr::RtrStream, _x: &mut State) {
     )
     .expect("cannot parse topology");
 
-    // version id for header
-    let version = 2;
     let start_serial = 42;
     // construct current state with serial
     let mut session_state = State::new_with_serial(Serial::from_be(start_serial));
@@ -72,7 +72,7 @@ async fn announce_config(stream: &mut rtr::RtrStream, _x: &mut State) {
     for aspa in topology.aspas {
         println!("announcing: cas: {} pas: {:?}", &aspa.0, &aspa.1);
         let aspa_object = Aspa::new(
-            1,
+            RTR_VERSION,
             1, //add //add //add //add
             Asn::from_u32(aspa.0),
             ProviderAsns::try_from_iter(
@@ -89,7 +89,7 @@ async fn announce_config(stream: &mut rtr::RtrStream, _x: &mut State) {
     }
 
     // endofdata pdu
-    let end_of_data = EndOfData::new(version, session_state, Timing::default());
+    let end_of_data = EndOfData::new(RTR_VERSION, session_state, Timing::default());
 
     // send endofdata
     end_of_data
@@ -99,8 +99,6 @@ async fn announce_config(stream: &mut rtr::RtrStream, _x: &mut State) {
 }
 
 async fn process_socket(stream: &mut rtr::RtrStream) {
-    // version id for header
-    let version = 2;
     let start_serial = 42;
     // construct current state with serial
     let mut session_state = State::new_with_serial(Serial::from_be(start_serial));
@@ -108,7 +106,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
     send_open(stream, &mut session_state).await;
 
     for _ in 0..10000 {
-        let new_pdu: Aspa = generate_random_aspa_object(version, 1).await;
+        let new_pdu: Aspa = generate_random_aspa_object(1).await;
 
         // send aspa pdu
         if let Err(e) = new_pdu.write(stream).await {
@@ -120,7 +118,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
         if rand::rng().random_range(0..10) < 3 {
             // constructing aspa pdu
             let wd_pdu: Aspa = Aspa::new(
-                version,
+                RTR_VERSION,
                 0, // withdraw
                 new_pdu.customer(),
                 ProviderAsns::empty(),
@@ -141,7 +139,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
     session_state.inc();
 
     // endofdata pdu
-    let end_of_data = EndOfData::new(version, session_state, Timing::default());
+    let end_of_data = EndOfData::new(RTR_VERSION, session_state, Timing::default());
 
     // send endofdata
     end_of_data
