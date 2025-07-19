@@ -2,14 +2,6 @@
   description = "rtrlab nix flake";
   inputs = {
     nixpkgs.url = "github:/nixos/nixpkgs/nixos-25.05";
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    microvm = {
-      url = "github:astro/microvm.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     naersk = {
       url = "github:nix-community/naersk";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -19,7 +11,7 @@
     };
   };
 
-  outputs = inputs@{ self, nixpkgs, microvm, sops-nix, naersk, fenix }:
+  outputs = {self, nixpkgs, naersk, fenix}:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
@@ -36,27 +28,19 @@
       };
     in
     {
-      packages."x86_64-linux".rtrlab-microvm = self.nixosConfigurations.rtrlab.config.microvm.declaredRunner;
-      packages."x86_64-linux".rtrlab-fishy-server = package;
-      nixosConfigurations = {
-        rtrlab = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs self; };
-          modules = [
-            microvm.nixosModules.microvm
-            sops-nix.nixosModules.sops
-            ./modules/rtrlab
-            ./hosts/rtrlab
-            ./modules/nginx.nix
-            {
-              nixpkgs.overlays = [
-                (final: prev: {
-                  inherit (self.packages.${prev.system}) rtrlab-fishy-server;
-                })
-              ];
-            }
-          ];
-        };
+      nixosModules = rec {
+        rtrlab = import ./modules/rtrlab;
+        default = rtrlab;
       };
+
+      overlays = rec {
+        rtrlab = _final: prev: {
+          inherit (self.packages.${prev.system})
+            rtrlab;
+        };
+        default = rtrlab;
+      };
+
+      packages."x86_64-linux".rtrlab-fishy-server = package;
     };
 }

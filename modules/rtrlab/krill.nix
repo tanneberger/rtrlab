@@ -13,7 +13,7 @@ let
     ip = "${http-host}"
     port = ${toString http-port}
     https_mode = "disable"
-    service_uri = "https://rtrlab.tanneberger.me/"
+    service_uri = "https://${config.gene}/"
     ca_refresh_seconds = 5400
     ca_refresh_jitter_seconds = 300
   '';
@@ -31,7 +31,7 @@ in
   environment.systemPackages = with pkgs; [ krill ];
   environment.variables = {
     KRILL_CLI_TOKEN = "${token}";
-    KRILL_CLI_SERVER = "https://rtrlab.tanneberger.me/";
+    KRILL_CLI_SERVER = "https://${config.rtrlab.domain}/";
     KRILL_CLI_MY_CA = "rtrlab";
   };
 
