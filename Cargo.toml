@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 tokio = {version = "1.33", features = ["macros", "rt-multi-thread"]}
-rpki = { version = "0.17", features = ["rtr", "crypto"]}
+rpki = { version = "0.18.6", features = ["rtr", "crypto"]}
 futures = "0.3.28"
 tokio-stream = "0.1.14"
 rand = "*"

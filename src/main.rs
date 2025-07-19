@@ -1,28 +1,25 @@
 mod rtr;
 
-use std::collections::HashMap;
 use rpki::resources::Asn;
+use std::collections::HashMap;
 use std::error::Error;
 use tokio::net::TcpListener;
 
-use rpki::rtr::pdu::{
-    Aspa, CacheResponse, EndOfData, ProviderAsns, ResetQuery, SerialNotify, SerialQuery,
-};
+use rpki::rtr::pdu::{Aspa, CacheResponse, EndOfData, ProviderAsns, ResetQuery};
 use rpki::rtr::state::{Serial, State};
 use rpki::rtr::Timing;
 
-use rand;
 use rand::Rng;
 use serde::Deserialize;
 
 async fn generate_random_aspa_object(flag: u8) -> Aspa {
-    let cas = rand::thread_rng().gen_range(1..200);
+    let cas = rand::rng().random_range(1..200);
 
-    let num_pas = rand::thread_rng().gen_range(1..100);
+    let num_pas = rand::rng().random_range(1..100);
     let mut pas = vec![];
 
-    for i in 0..num_pas {
-        pas.push(Asn::from_u32(rand::thread_rng().gen_range(1..200)))
+    for _i in 0..num_pas {
+        pas.push(Asn::from_u32(rand::rng().random_range(1..200)))
     }
 
     // constructing aspa pdu
@@ -36,8 +33,8 @@ async fn generate_random_aspa_object(flag: u8) -> Aspa {
 
 #[derive(Deserialize)]
 pub struct Topology {
-    as_numbers: Vec<u32>,
-    aspas: HashMap<u32, Vec<u32>>,
+    _as_numbers: Vec<u32>,
+    pub aspas: HashMap<u32, Vec<u32>>,
 }
 
 async fn send_open(stream: &mut rtr::RtrStream, session_state: &mut State) {
@@ -56,7 +53,7 @@ async fn send_open(stream: &mut rtr::RtrStream, session_state: &mut State) {
         .expect("cannot write cache response");
 }
 
-async fn announce_config(stream: &mut rtr::RtrStream, x: &mut State) {
+async fn announce_config(stream: &mut rtr::RtrStream, _x: &mut State) {
     let topology: Topology = serde_json::from_str(
         std::fs::read_to_string(std::env::var("TOPOLOGY_PATH").expect("cannot find TOPOLOGY_PATH"))
             .expect("cannot read topology")
@@ -79,7 +76,11 @@ async fn announce_config(stream: &mut rtr::RtrStream, x: &mut State) {
             1, //add //add //add //add
             Asn::from_u32(aspa.0),
             ProviderAsns::try_from_iter(
-                aspa.1.into_iter().map(Asn::from_u32).collect::<Vec<Asn>>().into_iter(),
+                aspa.1
+                    .into_iter()
+                    .map(Asn::from_u32)
+                    .collect::<Vec<Asn>>()
+                    .into_iter(),
             )
             .expect("cannot generate aspa pdu"),
         );
@@ -106,16 +107,15 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
 
     send_open(stream, &mut session_state).await;
 
-    for i in 0..10000 {
+    for _ in 0..10000 {
         let new_pdu: Aspa = generate_random_aspa_object(1).await;
 
         // send aspa pdu
-        new_pdu
-            .write(stream)
-            .await
-            .expect("cannot transmit aspa rtr pdu");
+        if let Err(e) = new_pdu.write(stream).await {
+            eprintln!("received error: {e}");
+        }
 
-        if rand::thread_rng().gen_range(0..10) < 3 {
+        if rand::rng().random_range(0..10) < 3 {
             // constructing aspa pdu
             let wd_pdu: Aspa = Aspa::new(
                 1,
