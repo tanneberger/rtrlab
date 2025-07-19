@@ -6,7 +6,7 @@ let
   rtr-host = "0.0.0.0";
   rtr-port = 3324;
 
-  rtr-port-stable = 3325; 
+  rtr-port-aspa = 3325; 
 
   config-file = (name: pkgs.writeText "routinator.conf" ''
 
@@ -76,7 +76,7 @@ in
     wantedBy = [ "multi-user.target" ];
 
     script = ''
-      ${pkgs.aspa_routinator}/bin/routinator --config ${(config-file "routinator-stable")} server --rtr ${rtr-host}:${toString rtr-port-stable}
+      ${pkgs.aspa_routinator}/bin/routinator --config ${(config-file "routinator-stable")} server --rtr ${rtr-host}:${toString rtr-port-aspa}
     '';
   };
   services = {
@@ -97,5 +97,5 @@ in
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ rtr-port rtr-port-stable 22 ];
+  networking.firewall.allowedTCPPorts = [ rtr-port rtr-port-aspa 22 ];
 }
