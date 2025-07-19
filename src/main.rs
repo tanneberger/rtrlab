@@ -14,14 +14,14 @@ use serde::Deserialize;
 
 const RTR_VERSION: u8 = 2;
 
-async fn generate_random_aspa_object(flag: u8) -> Aspa {
-    let cas = rand::rng().random_range(1..200);
+async fn generate_random_aspa_object(i: u32, flag: u8) -> Aspa {
+    let cas = i*2 + rand::rng().random_range(0..1);
 
     let num_pas = rand::rng().random_range(1..100);
     let mut pas = vec![];
 
     for _i in 0..num_pas {
-        pas.push(Asn::from_u32(rand::rng().random_range(1..200)))
+        pas.push(Asn::from_u32(rand::rng().random_range(1..20000)))
     }
 
     // constructing aspa pdu
@@ -105,8 +105,8 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
 
     send_open(stream, &mut session_state).await;
 
-    for _ in 0..10000 {
-        let new_pdu: Aspa = generate_random_aspa_object(1).await;
+    for i in 0..10000 {
+        let new_pdu: Aspa = generate_random_aspa_object(i, 1).await;
 
         // send aspa pdu
         if let Err(e) = new_pdu.write(stream).await {
