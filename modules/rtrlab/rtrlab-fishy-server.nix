@@ -12,7 +12,7 @@ in
       after = [ "network.target" ];
 
       script = ''
-        ${pkgs.rtrlab}/bin/rtrlab-fishy-server
+        ${pkgs.rtrlab}/bin/rtrlab-fishy-server&
       '';
 
       environment = {
