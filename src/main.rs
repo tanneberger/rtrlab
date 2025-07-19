@@ -12,7 +12,7 @@ use rpki::rtr::Timing;
 use rand::Rng;
 use serde::Deserialize;
 
-async fn generate_random_aspa_object(flag: u8) -> Aspa {
+async fn generate_random_aspa_object(version: u8, flag: u8) -> Aspa {
     let cas = rand::rng().random_range(1..200);
 
     let num_pas = rand::rng().random_range(1..100);
@@ -24,7 +24,7 @@ async fn generate_random_aspa_object(flag: u8) -> Aspa {
 
     // constructing aspa pdu
     Aspa::new(
-        1,
+        version,
         flag,
         Asn::from_u32(cas),
         ProviderAsns::try_from_iter(pas.into_iter()).expect("cannot generate aspa pdu"),
@@ -108,7 +108,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
     send_open(stream, &mut session_state).await;
 
     for _ in 0..10000 {
-        let new_pdu: Aspa = generate_random_aspa_object(1).await;
+        let new_pdu: Aspa = generate_random_aspa_object(version, 1).await;
 
         // send aspa pdu
         if let Err(e) = new_pdu.write(stream).await {
@@ -120,7 +120,7 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
         if rand::rng().random_range(0..10) < 3 {
             // constructing aspa pdu
             let wd_pdu: Aspa = Aspa::new(
-                1,
+                version,
                 0, // withdraw
                 new_pdu.customer(),
                 ProviderAsns::empty(),
