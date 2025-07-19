@@ -41,6 +41,6 @@
         default = rtrlab;
       };
 
-      packages."x86_64-linux".rtrlab-fishy-server = package;
+      packages."x86_64-linux".rtrlab = package;
     };
 }
