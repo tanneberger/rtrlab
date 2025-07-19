@@ -113,8 +113,10 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
         // send aspa pdu
         if let Err(e) = new_pdu.write(stream).await {
             eprintln!("received error: {e}");
+            return;
         }
 
+        // random withdrawls
         if rand::rng().random_range(0..10) < 3 {
             // constructing aspa pdu
             let wd_pdu: Aspa = Aspa::new(
@@ -124,10 +126,10 @@ async fn process_socket(stream: &mut rtr::RtrStream) {
                 ProviderAsns::empty(),
             );
 
-            wd_pdu
-                .write(stream)
-                .await
-                .expect("cannot transmit withdrawal aspa rtr pdu");
+            if let Err(e) = wd_pdu.write(stream).await {
+                eprintln!("received error: {e}");
+                return;
+            }
         } else {
             //announced_cas.push(new_pdu.customer());
         }
